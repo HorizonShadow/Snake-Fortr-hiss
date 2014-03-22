@@ -31,3 +31,7 @@ function love.draw()
       end
    end
 end
+
+function love.update()
+   snake:update()
+end
