@@ -22,13 +22,13 @@ function Snake:update()
 end
 
 function Snake:controls()
-   if love.keyboard.isDown("d") then
+   if love.keyboard.isDown("d") and self.direction ~= direction.LEFT then
       self.direction = direction.RIGHT
-   elseif love.keyboard.isDown("w") then
+   elseif love.keyboard.isDown("w") and self.direction ~= direction.DOWN then
       self.direction = direction.UP
-   elseif love.keyboard.isDown("a") then
+   elseif love.keyboard.isDown("a") and self.direction ~= direction.RIGHT then
       self.direction = direction.LEFT
-   elseif love.keyboard.isDown("s") then
+   elseif love.keyboard.isDown("s") and self.direction ~= direction.UP then
       self.direction= direction.DOWN
    end
 end
