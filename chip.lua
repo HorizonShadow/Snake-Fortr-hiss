@@ -16,7 +16,6 @@ function Chip:place_randomly(world)
    self.x = math.random(2, #world.map-1)
    self.y = math.random(2, #world.map[1]-1)
    world.map[self.x][self.y] = self
-   print(self.x, self.y)
 end
 
 function Chip:draw()

@@ -21,11 +21,16 @@ local updateTimer = 0
 
 
 function love.load()
+   init()
+
+end
+
+function init()
    init_window()
    init_graphics()
    init_classes()
    init_map()
-   place_snake_head()
+   init_snake()
    chip:place_randomly(world)
 end
 
@@ -44,6 +49,9 @@ function love.update(dt)
          snake:increase_length()
          sboard:add_score()
          chip:place_randomly(world)
+      end
+      if snake:is_dead() then
+         reset()
       end
       snake:update(world)
       updateTimer = 0
@@ -64,7 +72,7 @@ function draw_background_tile(x, y)
    love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
 
-function place_snake_head()
+function init_snake()
    world.map[snake.x][snake.y] = 1
 end
 
@@ -112,7 +120,6 @@ end
 function init_map()
    local mapWidth = (world.width / snake.width) * world.scale
    local mapHeight = ((world.height * world.scale - sboard.height) / snake.width)
-   print(mapWidth, mapHeight)
    for i = 1, mapWidth do
       world.map[i] = {}
       for j = 1, mapHeight do
@@ -126,4 +133,8 @@ function init_map()
          end
       end
    end
+end
+
+function reset()
+   init()
 end

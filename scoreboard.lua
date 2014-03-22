@@ -15,6 +15,13 @@ function Scoreboard:new(x, y, w, h, color)
    return s
 end
 
+function Scoreboard:reset()
+   self.score = 0
+   self.hiscore = 0
+   self.time_since_last = 0
+   self.food = 0
+end
+
 function Scoreboard:update_time_since_last(t)
    self.time_since_last = self.time_since_last + t
 end
