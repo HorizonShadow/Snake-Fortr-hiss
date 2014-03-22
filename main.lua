@@ -1,6 +1,7 @@
 -- INDEXES START AT 1 FUCK
 
 local Snake = require("snake")
+local Scoreboard = require("scoreboard")
 local world = {
    scale = 3,
    width = 160,
@@ -8,15 +9,18 @@ local world = {
    map = {}
 }
 local snake = nil
+local sboard = nil
 local updateTimer = 0
-local scoreHeight = 14
 function love.load()
    love.window.setTitle("Team Fortr-hissss")
    love.window.setMode(world.width * world.scale, world.height * world.scale)
    love.graphics.setBackgroundColor(255,255,255)
+
+   sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
    snake = Snake:new(world, 6, 6, {0, 0, 0})
+
    local mapWidth = world.width / snake.width * world.scale
-   local mapHeight = ((world.height - scoreHeight) / snake.height * world.scale)
+   local mapHeight = ((world.height - sboard.height) / snake.height * world.scale)
    for i = 1, mapWidth do
       world.map[i] = {}
       for j = 1, mapHeight do
@@ -28,6 +32,7 @@ function love.load()
 end
 
 function love.draw()
+   sboard:draw()
    for i = 1, #world.map do
       for j = 1, #world.map[1] do
          if world.map[i][j] > 0 then
