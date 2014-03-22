@@ -16,7 +16,7 @@ function love.load()
          world.map[i][j] = 0
       end
    end
-   snake = Snake:new(world, 1, 1, {0, 0, 0})
+   snake = Snake:new(world, 6, 6, {0, 0, 0})
 end
 
 function love.draw()
@@ -24,7 +24,7 @@ function love.draw()
       for j = 1, world.height do
          if world.map[i][j] > 0 then
             love.graphics.setColor(snake.color)
-            love.graphics.rectangle("fill", i, j, snake.width, snake.height)
+            love.graphics.rectangle("fill", i * snake.width, j * snake.height, snake.width, snake.height)
             love.graphics.setColor(255, 255, 255)
             love.graphics.rectangle("line", i, j, snake.width, snake.height)
          end
