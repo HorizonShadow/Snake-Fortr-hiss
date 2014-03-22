@@ -6,6 +6,7 @@ tile = { BORDER = "BR"}
 
 require("loveframes")
 local Mainmenu = require("mainmenu")
+local GameOverScreen = require("gameoverscreen")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
@@ -19,12 +20,14 @@ local snake = nil
 local sboard = nil
 local chip = nil
 local mainmenu = nil
+local gameoverscreen = nil
 local updateTimer = 0
 local state = "mainmenu"
 
 function love.load()
    loveframes.SetState("mainmenu")
    init()
+   init_loveframes()
 end
 
 function init()
@@ -34,7 +37,6 @@ function init()
    init_map()
    init_snake()
    chip:place_randomly(world)
-   mainmenu:init()
 end
 
 function love.mousepressed(x, y, button)
@@ -77,6 +79,7 @@ function love.update(dt)
             chip:place_randomly(world)
          end
          if snake:is_dead() then
+            loveframes.SetState("gameover")
             reset()
          end
          snake:update(world)
@@ -135,6 +138,11 @@ function print_map()
    end
 end
 
+function init_loveframes()
+   mainmenu:init()
+   gameoverscreen:init()
+end
+
 function init_window()
    love.window.setTitle("Team Fortr-hissss")
    love.window.setMode(world.width * world.scale, world.height * world.scale)
@@ -149,6 +157,7 @@ function init_classes()
    snake = Snake:new(16, 24, 5 * world.scale, 5 * world.scale, {0, 0, 0})
    chip = Chip:new(0, 0, 5 * world.scale, 5 * world.scale)
    mainmenu = Mainmenu:new(world.width * world.scale, world.height * world.scale)
+   gameoverscreen = GameOverScreen:new(world.width * world.scale, world.height * world.scale)
 end
 
 function init_map()
