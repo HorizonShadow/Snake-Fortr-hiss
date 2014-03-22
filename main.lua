@@ -13,37 +13,7 @@ local snake = nil
 local sboard = nil
 local updateTimer = 0
 
-function init_window()
-   love.window.setTitle("Team Fortr-hissss")
-   love.window.setMode(world.width * world.scale, world.height * world.scale)
-end
 
-function init_graphics()
-   love.graphics.setBackgroundColor(255,255,255)
-end
-
-function init_classes()
-   sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
-   snake = Snake:new(world, 6, 6, {0, 0, 0})
-end
-
-function init_map()
-   local mapWidth = world.width / snake.width * world.scale
-   local mapHeight = ((world.height - sboard.height / world.scale) / snake.height * world.scale)
-   for i = 1, mapWidth do
-      world.map[i] = {}
-      for j = 1, mapHeight do
-         if (j == 1)
-         or (j == mapHeight)
-         or (i == 1)
-         or (i == mapWidth) then
-            world.map[i][j] = tile.BORDER
-         else
-            world.map[i][j] = 0
-         end
-      end
-   end
-end
 
 function love.load()
    init_window()
@@ -111,5 +81,37 @@ function print_map()
          io.write(world.map[i][j])
       end
       print("")
+   end
+end
+
+function init_window()
+   love.window.setTitle("Team Fortr-hissss")
+   love.window.setMode(world.width * world.scale, world.height * world.scale)
+end
+
+function init_graphics()
+   love.graphics.setBackgroundColor(255,255,255)
+end
+
+function init_classes()
+   sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
+   snake = Snake:new(world, 6, 6, {0, 0, 0})
+end
+
+function init_map()
+   local mapWidth = world.width / snake.width * world.scale
+   local mapHeight = ((world.height - sboard.height / world.scale) / snake.height * world.scale)
+   for i = 1, mapWidth do
+      world.map[i] = {}
+      for j = 1, mapHeight do
+         if (j == 1)
+         or (j == mapHeight)
+         or (i == 1)
+         or (i == mapWidth) then
+            world.map[i][j] = tile.BORDER
+         else
+            world.map[i][j] = 0
+         end
+      end
    end
 end
