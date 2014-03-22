@@ -37,7 +37,7 @@ function Snake:increment()
       for j = 1, #self.world.map[1] do
          if self.world.map[i][j] == self.length then
             self.world.map[i][j] = 0
-         elseif self.world.map[i][j] > 0 then
+         elseif type(self.world.map[i][j]) ~= "string" and self.world.map[i][j] > 0 then
             self.world.map[i][j] = self.world.map[i][j] + 1
          end
       end
