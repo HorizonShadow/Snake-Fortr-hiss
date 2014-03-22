@@ -32,17 +32,19 @@ function love.draw()
       for j = 1, #world.map[1] do
          if world.map[i][j] > 0 then
             love.graphics.setColor(snake.color)
-            love.graphics.rectangle("fill", i * snake.width, j * snake.height, snake.width, snake.height)
+            love.graphics.rectangle("fill", (i-1) * snake.width, (j-1) * snake.height, snake.width, snake.height)
             love.graphics.setColor(255, 255, 255)
-            love.graphics.rectangle("line", i, j, snake.width, snake.height)
+            love.graphics.rectangle("line", (i-1) * snake.width, (j-1) * snake.height, snake.width, snake.height)
          end
       end
    end
 end
 
 function love.update(dt)
+   snake:controls()
+
    updateTimer = updateTimer + dt
-   if updateTimer > 1 then
+   if updateTimer > 0.05 then
       os.execute("clear")
       world.map = snake:update()
       print_map()
