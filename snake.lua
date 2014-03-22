@@ -4,8 +4,8 @@ function Snake:new(world, x, y, color)
    local s = {
       world = world,
       color = color,
-      width = 10 * world.scale,
-      height = 10 * world.scale,
+      width = 5 * world.scale,
+      height = 5 * world.scale,
       direction = direction.UP,
       length = 1,
       x = x,
@@ -21,6 +21,17 @@ function Snake:update()
    return self.world.map
 end
 
+function Snake:controls()
+   if love.keyboard.isDown("d") then
+      self.direction = direction.RIGHT
+   elseif love.keyboard.isDown("w") then
+      self.direction = direction.UP
+   elseif love.keyboard.isDown("a") then
+      self.direction = direction.LEFT
+   elseif love.keyboard.isDown("s") then
+      self.direction= direction.DOWN
+   end
+end
 function Snake:increment()
    for i = 1, #self.world.map do
       for j = 1, #self.world.map[1] do
@@ -34,11 +45,16 @@ function Snake:increment()
 end
 
 function Snake:move()
-   if self.direction == direction.UP then
-      if self.world.map[self.x][self.y-1] == 0 then
-         self.world.map[self.x][self.y-1] = 1
-      end
+   if self.direction == direction.UP and self.world.map[self.x][self.y - 1] == 0 then
+      self.y = self.y - 1
+   elseif self.direction == direction.DOWN and self.world.map[self.x][self.y + 1] == 0 then
+      self.y = self.y + 1
+   elseif self.direction == direction.LEFT and self.world.map[self.x - 1][self.y] == 0 then
+      self.x = self.x - 1
+   elseif self.direction == direction.RIGHT and self.world.map[self.x + 1][self.y] == 0 then
+      self.x = self.x + 1
    end
+   self.world.map[self.x][self.y] = 1
 end
 
 return Snake
