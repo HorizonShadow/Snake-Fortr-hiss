@@ -11,7 +11,6 @@ function Snake:new(world, x, y, color)
       x = x,
       y = y
    }
-   world.map[x][y] = 1
    setmetatable(s, {__index = Snake})
    return s
 end
@@ -19,11 +18,12 @@ end
 function Snake:update()
    self:increment()
    self:move()
+   return self.world.map
 end
 
 function Snake:increment()
-   for i = 1, self.world.width do
-      for j = 1, self.world.height do
+   for i = 1, #self.world.map do
+      for j = 1, #self.world.map[1] do
          if self.world.map[i][j] == self.length then
             self.world.map[i][j] = 0
          elseif self.world.map[i][j] > 0 then
@@ -35,7 +35,7 @@ end
 
 function Snake:move()
    if self.direction == direction.UP then
-      if self.world.map[self.x][self.y-1] > 0 then
+      if self.world.map[self.x][self.y-1] == 0 then
          self.world.map[self.x][self.y-1] = 1
       end
    end
