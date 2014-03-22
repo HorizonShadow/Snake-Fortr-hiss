@@ -35,6 +35,7 @@ function Scoreboard:draw()
    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
    love.graphics.setColor(0,0,0)
    love.graphics.print("score: "..self.score, self.x, self.y)
+   love.graphics.print("food: "..self.food, self.x, self.y, 0, 1, 1, 0, -15)
    love.graphics.setColor(love.graphics.getBackgroundColor())
 end
 return Scoreboard
