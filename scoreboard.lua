@@ -15,7 +15,7 @@ function Scoreboard:new(x, y, w, h, color)
 end
 
 function Scoreboard:draw()
-   love.graphics.setColor(255,255,200)
+   love.graphics.setColor(166, 166, 166)
    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
    love.graphics.setColor(0,0,0)
    love.graphics.print("score: "..self.score, self.x, self.y)
