@@ -4,6 +4,7 @@
 tile = { BORDER = "BR"}
 -- ** END GLOBALS **
 
+require("loveframes")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
@@ -22,7 +23,6 @@ local updateTimer = 0
 
 function love.load()
    init()
-
 end
 
 function init()
@@ -34,30 +34,59 @@ function init()
    chip:place_randomly(world)
 end
 
+function love.mousepressed(x, y, button)
+   loveframes.mousepressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+   loveframes.mousereleased(x, y, button)
+end
+
+function love.keypressed(key, unicode)
+   loveframes.keypressed(key, unicode)
+end
+
+function love.keyreleased(key, unicode)
+   loveframes.keyreleased(key, unicode)
+end
+
+function love.textinput(text)
+   loveframes.textinput(text)
+end
+
 function love.draw()
    sboard:draw()
    draw_map()
+   loveframes.draw()
 end
 
 function love.update(dt)
-   snake:controls()
-   sboard:update_time_since_last(dt)
 
-   updateTimer = updateTimer + dt
-   if updateTimer > 0.05 then
-      if snake:touching(chip) then
-         snake:increase_length()
-         sboard:add_score()
-         chip:place_randomly(world)
+   if isPlaying == nil then
+      snake:controls()
+      sboard:update_time_since_last(dt)
+
+      updateTimer = updateTimer + dt
+      if updateTimer > 0.04 then
+         if snake:touching(chip) then
+            snake:increase_length()
+            sboard:add_score()
+            chip:place_randomly(world)
+         end
+         if snake:is_dead() then
+            reset()
+         end
+         snake:update(world)
+         updateTimer = 0
       end
-      if snake:is_dead() then
-         reset()
-      end
-      snake:update(world)
-      updateTimer = 0
+   else
+      loveframes.update(dt)
    end
 end
 
+function listen_for_input()
+
+end
 function draw_snake_tile(x, y)
    love.graphics.setColor(166, 166, 166)
    love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
@@ -113,7 +142,7 @@ end
 
 function init_classes()
    sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
-   snake = Snake:new(6, 6, 5 * world.scale, 5 * world.scale, {0, 0, 0})
+   snake = Snake:new(16, 24, 5 * world.scale, 5 * world.scale, {0, 0, 0})
    chip = Chip:new(0, 0, 5 * world.scale, 5 * world.scale)
 end
 
