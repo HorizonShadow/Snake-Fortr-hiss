@@ -2,6 +2,7 @@
 
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
+local tile = { BORDER = "BR"}
 local world = {
    scale = 3,
    width = 160,
@@ -20,11 +21,18 @@ function love.load()
    snake = Snake:new(world, 6, 6, {0, 0, 0})
 
    local mapWidth = world.width / snake.width * world.scale
-   local mapHeight = ((world.height - sboard.height) / snake.height * world.scale)
+   local mapHeight = ((world.height - sboard.height / world.scale) / snake.height * world.scale)
    for i = 1, mapWidth do
       world.map[i] = {}
       for j = 1, mapHeight do
-         world.map[i][j] = 0
+         if (j == 1)
+         or (j == mapHeight)
+         or (i == 1)
+         or (i == mapWidth) then
+            world.map[i][j] = tile.BORDER
+         else
+            world.map[i][j] = 0
+         end
       end
    end
    print(#world.map[1], #world.map)
@@ -35,11 +43,12 @@ function love.draw()
    sboard:draw()
    for i = 1, #world.map do
       for j = 1, #world.map[1] do
-         if world.map[i][j] > 0 then
-            love.graphics.setColor(snake.color)
-            love.graphics.rectangle("fill", (i-1) * snake.width, (j-1) * snake.height, snake.width, snake.height)
-            love.graphics.setColor(255, 255, 255)
-            love.graphics.rectangle("line", (i-1) * snake.width, (j-1) * snake.height, snake.width, snake.height)
+         if world.map[i][j] == tile.BORDER then
+            draw_background_tile(i, j)
+         elseif world.map[i][j] > 0 then
+            draw_snake_tile(i, j)
+         end
+         if world.map[i][j] ~= 0 then
          end
       end
    end
@@ -55,6 +64,18 @@ function love.update(dt)
       print_map()
       updateTimer = 0
    end
+end
+function draw_snake_tile(x, y)
+   love.graphics.setColor(snake.color)
+   love.graphics.rectangle("fill", (x-1) * snake.width, (y-1) * snake.height, snake.width, snake.height)
+end
+function draw_background_tile(x, y)
+   borderColor = {166, 166, 166}
+   fillColor = {0, 0, 0}
+   love.graphics.setColor(107, 107, 107)
+   love.graphics.rectangle("fill", (x-1) * snake.width, (y-1) * snake.height, snake.width, snake.height)
+   love.graphics.setColor(0, 0, 0)
+   love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
 
 function print_map()
