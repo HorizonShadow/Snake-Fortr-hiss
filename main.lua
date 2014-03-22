@@ -5,6 +5,7 @@ tile = { BORDER = "BR"}
 -- ** END GLOBALS **
 
 require("loveframes")
+local Mainmenu = require("mainmenu")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
@@ -17,11 +18,12 @@ local world = {
 local snake = nil
 local sboard = nil
 local chip = nil
+local mainmenu = nil
 local updateTimer = 0
-
-
+local state = "mainmenu"
 
 function love.load()
+   loveframes.SetState("mainmenu")
    init()
 end
 
@@ -32,6 +34,7 @@ function init()
    init_map()
    init_snake()
    chip:place_randomly(world)
+   mainmenu:init()
 end
 
 function love.mousepressed(x, y, button)
@@ -61,8 +64,8 @@ function love.draw()
 end
 
 function love.update(dt)
-
-   if isPlaying == nil then
+   local state = loveframes:GetState()
+   if state == "game" then
       snake:controls()
       sboard:update_time_since_last(dt)
 
@@ -81,12 +84,14 @@ function love.update(dt)
       end
    else
       loveframes.update(dt)
+      if state == "store" then
+
+      elseif state == "mainmenu" then
+
+      end
    end
 end
 
-function listen_for_input()
-
-end
 function draw_snake_tile(x, y)
    love.graphics.setColor(166, 166, 166)
    love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
@@ -100,7 +105,6 @@ function draw_background_tile(x, y)
    love.graphics.setColor(0, 0, 0)
    love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
-
 function init_snake()
    world.map[snake.x][snake.y] = 1
 end
@@ -144,6 +148,7 @@ function init_classes()
    sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
    snake = Snake:new(16, 24, 5 * world.scale, 5 * world.scale, {0, 0, 0})
    chip = Chip:new(0, 0, 5 * world.scale, 5 * world.scale)
+   mainmenu = Mainmenu:new(world.width * world.scale, world.height * world.scale)
 end
 
 function init_map()
