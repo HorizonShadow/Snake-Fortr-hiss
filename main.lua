@@ -65,13 +65,15 @@ function love.update(dt)
       updateTimer = 0
    end
 end
+
 function draw_snake_tile(x, y)
+   love.graphics.setColor(166, 166, 166)
+   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
    love.graphics.setColor(snake.color)
-   love.graphics.rectangle("fill", (x-1) * snake.width, (y-1) * snake.height, snake.width, snake.height)
+   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 4, 100)
 end
+
 function draw_background_tile(x, y)
-   borderColor = {166, 166, 166}
-   fillColor = {0, 0, 0}
    love.graphics.setColor(107, 107, 107)
    love.graphics.rectangle("fill", (x-1) * snake.width, (y-1) * snake.height, snake.width, snake.height)
    love.graphics.setColor(0, 0, 0)
