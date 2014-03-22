@@ -12,6 +12,7 @@ function Snake:new(x, y, w, h, color)
       height = h,
       direction = direction.UP,
       length = 1,
+      alive = true,
       x = x,
       y = y
    }
@@ -24,6 +25,9 @@ function Snake:update(world)
    self:move(world)
 end
 
+function Snake:is_dead()
+   return not self.alive
+end
 function Snake:controls()
    if love.keyboard.isDown("d") and self.direction ~= direction.LEFT then
       self.direction = direction.RIGHT
@@ -59,12 +63,13 @@ end
 
 function Snake:move(world) --can move over anything but
    local nextPos = world.map[self.x + self.direction.x][self.y + self.direction.y]
-   if nextPos == 0
-   or type(nextPos) == "table" then
+   if nextPos == 0 or type(nextPos) == "table" then
       self.x = self.x + self.direction.x
       self.y = self.y + self.direction.y
+      world.map[self.x][self.y] = 1
+   else
+      self.alive = false
    end
-   world.map[self.x][self.y] = 1
 end
 
 return Snake
