@@ -53,6 +53,13 @@ function Snake:increment(world)
    end
 end
 
+function Snake:draw(x, y)
+   love.graphics.setColor(166, 166, 166)
+   love.graphics.circle("fill", (x - 1) * self.width + self.width / 2, (y - 1) * self.height + self.height / 2, self.width / 2, 100)
+   love.graphics.setColor(self.color)
+   love.graphics.circle("fill", (x - 1) * self.width + self.width / 2, (y - 1) * self.height + self.height / 2, self.width / 4, 100)
+end
+
 function Snake:touching(chip)
    return self.x == chip.x and self.y == chip.y
 end
