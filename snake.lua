@@ -54,7 +54,7 @@ function Snake:touching(chip)
 end
 
 function Snake:increase_length()
-   self.length = self.length + 1
+   self.length = self.length + 4
 end
 
 function Snake:move(world) --can move over anything but
