@@ -57,13 +57,13 @@ function Store:init()
          :SetText("Buy now!")
          :SetWidth(100)
          :SetPos(345, 20)
-      if self.items[i].bought then
-         buyButton:SetEnabled(false)
-                  :SetText("Bought!")
-      end
       if self.points < self.items[i].price then
          buyButton:SetEnabled(false)
                   :SetText("Not enough points")
+      end
+      if self.items[i].bought then
+         buyButton:SetEnabled(false)
+                  :SetText("Bought!")
       end
       buyButton.OnClick =
          function(object, x, y)
@@ -72,6 +72,8 @@ function Store:init()
                object:SetEnabled(false)
                self.items[i].bought = true
                self.points = self.points - self.items[i].price
+               self.pointsText:SetText(self.points)
+               save_stats()
             end
          end
       itemGrid:AddItem(panel, i, 1)
