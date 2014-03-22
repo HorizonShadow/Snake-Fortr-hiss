@@ -1,8 +1,17 @@
 local Snake = require("snake")
-local screenWidth = 160;
-local screenHeight = 144;
-local screenScale = 3;
+local world = {
+   scale = 3,
+   width = 160,
+   height = 144,
+   map = {}
+}
 function love.load()
    love.window.setTitle("Team Fortr-hissss")
-   love.window.setMode(screenWidth * screenScale, screenHeight * screenScale)
+   love.window.setMode(world.width * world.scale, world.height * world.scle)
+   for i = 1, world.width do
+      world.map[i] = {}
+      for j = 1, world.height do
+         world.map[i][j] = 0
+      end
+   end
 end
