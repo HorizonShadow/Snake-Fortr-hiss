@@ -1,15 +1,17 @@
--- INDEXES START AT 1 FUCK
-
 -- ** GLOBALS **
 tile = { BORDER = "BR"}
+require("loveframes")
 -- ** END GLOBALS **
 
-require("loveframes")
+local Item = require("item")
+local ser = require("ser")
 local Mainmenu = require("mainmenu")
+local Store = require("store")
 local GameOverScreen = require("gameoverscreen")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
+local sprites = love.graphics.newImage("lib/characters.png")
 local world = {
    scale = 3,
    width = 160,
@@ -21,13 +23,26 @@ local sboard = nil
 local chip = nil
 local mainmenu = nil
 local gameoverscreen = nil
+local store = nil
+local itemImages = {
+   love.graphics.newImage("lib/bunny-ears.png"),
+   love.graphics.newImage("lib/bunny-hat.png"),
+   love.graphics.newImage("lib/black-top-hat.png"),
+   love.graphics.newImage("lib/cowbow-hat.png"),
+   love.graphics.newImage("lib/red-hat.png"),
+   love.graphics.newImage("lib/slime-hat.png")
+}
 local updateTimer = 0
 local state = "mainmenu"
+local prevStats = 0
 
 function love.load()
    loveframes.SetState("mainmenu")
    init()
-   init_loveframes()
+end
+
+function love.quit()
+   save_stats()
 end
 
 function init()
@@ -37,6 +52,7 @@ function init()
    init_map()
    init_snake()
    chip:place_randomly(world)
+   init_loveframes()
 end
 
 function love.mousepressed(x, y, button)
@@ -60,8 +76,10 @@ function love.textinput(text)
 end
 
 function love.draw()
-   sboard:draw()
-   draw_map()
+   if loveframes:GetState() == "game" then
+      sboard:draw()
+      draw_map()
+   end
    loveframes.draw()
 end
 
@@ -72,14 +90,16 @@ function love.update(dt)
       sboard:update_time_since_last(dt)
 
       updateTimer = updateTimer + dt
-      if updateTimer > 0.04 then
+      if updateTimer > .04 then
          if snake:touching(chip) then
             snake:increase_length()
             sboard:add_score()
             chip:place_randomly(world)
          end
          if snake:is_dead() then
+            -- This enitre fucking conditional is a mess
             loveframes.SetState("gameover")
+            save_stats()
             reset()
          end
          snake:update(world)
@@ -87,11 +107,6 @@ function love.update(dt)
       end
    else
       loveframes.update(dt)
-      if state == "store" then
-
-      elseif state == "mainmenu" then
-
-      end
    end
 end
 
@@ -100,6 +115,17 @@ function draw_snake_tile(x, y)
    love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
    love.graphics.setColor(snake.color)
    love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 4, 100)
+end
+
+function draw_snake_hats(x, y)
+   love.graphics.setColor(255,255,255)
+   local offset = 0
+   for i = 1, #store.items do
+      if store.items[i].bought then
+         love.graphics.draw(itemImages[i], ((x - 1.5) * snake.width + snake.width / 2), ((y - 2) * snake.height + snake.height / 2) + offset)
+         offset = offset - 12
+      end
+   end
 end
 
 function draw_background_tile(x, y)
@@ -122,6 +148,7 @@ function draw_map()
             draw_background_tile(i, j)
          elseif world.map[i][j] > 0 then
             draw_snake_tile(i, j)
+            draw_snake_hats(i, j)
          end
          if world.map[i][j] ~= 0 then
          end
@@ -141,6 +168,7 @@ end
 function init_loveframes()
    mainmenu:init()
    gameoverscreen:init()
+   store:init()
 end
 
 function init_window()
@@ -153,11 +181,33 @@ function init_graphics()
 end
 
 function init_classes()
+   local file = load_prev_stats()
+   local items = {}
+
    sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
    snake = Snake:new(16, 24, 5 * world.scale, 5 * world.scale, {0, 0, 0})
    chip = Chip:new(0, 0, 5 * world.scale, 5 * world.scale)
    mainmenu = Mainmenu:new(world.width * world.scale, world.height * world.scale)
    gameoverscreen = GameOverScreen:new(world.width * world.scale, world.height * world.scale)
+
+   if file then
+      items = file.items
+   else
+      prevStats = 0
+      create_save_file()
+      items = {
+         Item:new("lib/bunny-ears.png", 2500, "Marvelous bunny ears suitable for any occaision", "Blarget"),
+         Item:new("lib/bunny-hat.png", 3000, "Sometimes you just need a living creature on your head", "Blarget"),
+         Item:new("lib/black-top-hat.png", 4500, "The classiest of snake hats", "Blarget"),
+         Item:new("lib/cowbow-hat.png", 7000, "Yee-haw!", "Blarget"),
+         Item:new("lib/red-hat.png", 10000, "I don't even know what this is", "Blarget"),
+         Item:new("lib/slime-hat.png", 15000, "Prepared to be slimed!", "Blarget")
+      }
+   end
+   print(items)
+   store = Store:new(world.width * world.scale, world.height * world.scale, items, prevStats)
+   print(store.items[1].image)
+
 end
 
 function init_map()
@@ -180,4 +230,38 @@ end
 
 function reset()
    init()
+end
+
+function create_save_file()
+   local save = io.open("snake.sav", "w")
+   save:write(ser({
+      score = 0,
+      items = items
+   }))
+   save:close()
+   return { score = 0 }
+end
+
+function save_stats()
+   local file = io.open("snake.sav", "w")
+   if file then
+      file:write(ser({
+         score = prevStats + sboard.score,
+         items = store.items
+      }))
+   end
+   file:close()
+end
+
+function load_prev_stats()
+   local file = io.open("snake.sav", "r")
+   if file then
+      local stats = loadstring(file:read("*a"))()
+      file:close()
+      if stats then
+         prevStats = stats.score
+         return stats
+      end
+   end
+   return nil
 end
