@@ -1,3 +1,4 @@
+local Snake = require("snake")
 local screenWidth = 160;
 local screenHeight = 144;
 local screenScale = 3;
