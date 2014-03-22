@@ -53,8 +53,18 @@ function draw_background_tile(x, y)
    love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
 
+function draw_chip_tile(x, y)
+   love.graphics.setColor(91, 91, 91)
+   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
+   love.graphics.setColor(0, 0, 0)
+   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 4, 100)
+end
+
 function place_starting_chip()
-   --pick random x,y. Place tile.CHIP
+   local x = math.random(1, #world.map[1])
+   local y = math.random(1, #world.map)
+   print(x, y)
+   world.map[x][y] = tile.CHIP
 end
 
 function place_snake_head()
@@ -66,6 +76,8 @@ function draw_map()
       for j = 1, #world.map[1] do
          if world.map[i][j] == tile.BORDER then
             draw_background_tile(i, j)
+         elseif world.map[i][j] == tile.CHIP then
+            draw_chip_tile(i, j)
          elseif world.map[i][j] > 0 then
             draw_snake_tile(i, j)
          end
