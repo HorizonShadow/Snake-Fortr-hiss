@@ -1,5 +1,10 @@
 Snake = {}
-local direction = { UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3}
+local direction = {
+   UP = {x = 0, y = -1},
+   DOWN = {x = 0, y = 1},
+   LEFT = {x = -1, y = 0},
+   RIGHT = {x = 1, y = 0}
+}
 function Snake:new(world, x, y, color)
    local s = {
       world = world,
@@ -44,15 +49,12 @@ function Snake:increment()
    end
 end
 
-function Snake:move()
-   if self.direction == direction.UP and self.world.map[self.x][self.y - 1] == 0 then
-      self.y = self.y - 1
-   elseif self.direction == direction.DOWN and self.world.map[self.x][self.y + 1] == 0 then
-      self.y = self.y + 1
-   elseif self.direction == direction.LEFT and self.world.map[self.x - 1][self.y] == 0 then
-      self.x = self.x - 1
-   elseif self.direction == direction.RIGHT and self.world.map[self.x + 1][self.y] == 0 then
-      self.x = self.x + 1
+function Snake:move() --can move over anything but
+   local nextPos = self.world.map[self.x + self.direction.x][self.y + self.direction.y]
+   if nextPos == 0
+   or nextPos == tile.CHIP then
+      self.x = self.x + self.direction.x
+      self.y = self.y + self.direction.y
    end
    self.world.map[self.x][self.y] = 1
 end
