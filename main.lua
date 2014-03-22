@@ -21,6 +21,11 @@ local updateTimer = 0
 
 
 function love.load()
+   init()
+
+end
+
+function init()
    init_window()
    init_graphics()
    init_classes()
@@ -44,6 +49,9 @@ function love.update(dt)
          snake:increase_length()
          sboard:add_score()
          chip:place_randomly(world)
+      end
+      if snake:is_dead() then
+         reset()
       end
       snake:update(world)
       updateTimer = 0
@@ -112,7 +120,6 @@ end
 function init_map()
    local mapWidth = (world.width / snake.width) * world.scale
    local mapHeight = ((world.height * world.scale - sboard.height) / snake.width)
-   print(mapWidth, mapHeight)
    for i = 1, mapWidth do
       world.map[i] = {}
       for j = 1, mapHeight do
@@ -129,7 +136,5 @@ function init_map()
 end
 
 function reset()
-   init_snake()
-   chip:place_randomly()
-   sboard:reset()
+   init()
 end
