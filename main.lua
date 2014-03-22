@@ -25,7 +25,7 @@ function love.load()
    init_graphics()
    init_classes()
    init_map()
-   place_snake_head()
+   init_snake()
    chip:place_randomly(world)
 end
 
@@ -64,7 +64,7 @@ function draw_background_tile(x, y)
    love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
 
-function place_snake_head()
+function init_snake()
    world.map[snake.x][snake.y] = 1
 end
 
@@ -126,4 +126,10 @@ function init_map()
          end
       end
    end
+end
+
+function reset()
+   init_snake()
+   chip:place_randomly()
+   sboard:reset()
 end
