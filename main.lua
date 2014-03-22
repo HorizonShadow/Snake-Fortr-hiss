@@ -43,6 +43,7 @@ end
 function love.update(dt)
    updateTimer = updateTimer + dt
    if updateTimer > 1 then
+      os.execute("clear")
       world.map = snake:update()
       print_map()
       updateTimer = 0
@@ -50,11 +51,10 @@ function love.update(dt)
 end
 
 function print_map()
-   for i = 1, #world.map do
-      for j = 1, #world.map[1] do
+   for j = 1, #world.map[1] do
+      for i = 1, #world.map do
          io.write(world.map[i][j])
       end
       print("")
    end
-   print (" -------------------- ")
 end
