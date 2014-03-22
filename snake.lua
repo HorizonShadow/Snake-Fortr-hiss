@@ -5,12 +5,11 @@ local direction = {
    LEFT = {x = -1, y = 0},
    RIGHT = {x = 1, y = 0}
 }
-function Snake:new(world, x, y, color)
+function Snake:new(x, y, w, h, color)
    local s = {
-      world = world,
       color = color,
-      width = 5 * world.scale,
-      height = 5 * world.scale,
+      width = w,
+      height = h,
       direction = direction.UP,
       length = 1,
       x = x,
@@ -20,10 +19,9 @@ function Snake:new(world, x, y, color)
    return s
 end
 
-function Snake:update()
-   self:increment()
-   self:move()
-   return self.world.map
+function Snake:update(world)
+   self:increment(world)
+   self:move(world)
 end
 
 function Snake:controls()
@@ -37,26 +35,36 @@ function Snake:controls()
       self.direction= direction.DOWN
    end
 end
-function Snake:increment()
-   for i = 1, #self.world.map do
-      for j = 1, #self.world.map[1] do
-         if self.world.map[i][j] == self.length then
-            self.world.map[i][j] = 0
-         elseif type(self.world.map[i][j]) ~= "string" and self.world.map[i][j] > 0 then
-            self.world.map[i][j] = self.world.map[i][j] + 1
+function Snake:increment(world)
+   for i = 1, #world.map do
+      for j = 1, #world.map[1] do
+         if world.map[i][j] == self.length then
+            world.map[i][j] = 0
+         elseif type(world.map[i][j]) ~= "string"
+         and type(world.map[i][j]) ~= "table"
+         and world.map[i][j] > 0 then
+            world.map[i][j] = world.map[i][j] + 1
          end
       end
    end
 end
 
-function Snake:move() --can move over anything but
-   local nextPos = self.world.map[self.x + self.direction.x][self.y + self.direction.y]
+function Snake:touching(chip)
+   return self.x == chip.x and self.y == chip.y
+end
+
+function Snake:increase_length()
+   self.length = self.length + 1
+end
+
+function Snake:move(world) --can move over anything but
+   local nextPos = world.map[self.x + self.direction.x][self.y + self.direction.y]
    if nextPos == 0
-   or nextPos == tile.CHIP then
+   or type(nextPos) == "table" then
       self.x = self.x + self.direction.x
       self.y = self.y + self.direction.y
    end
-   self.world.map[self.x][self.y] = 1
+   world.map[self.x][self.y] = 1
 end
 
 return Snake

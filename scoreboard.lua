@@ -8,10 +8,19 @@ function Scoreboard:new(x, y, w, h, color)
       height = h,
       score = 0,
       food = 0,
-      hiScore = 0
+      hiScore = 0,
+      time_since_last = 0
    }
    setmetatable(s, {__index = Scoreboard})
    return s
+end
+
+function Scoreboard:update_time_since_last(t)
+   self.time_since_last = self.time_since_last + t
+end
+
+function Scoreboard:add_score()
+   self.score = self.score + 100 + (10 / self.time_since_last)
 end
 
 function Scoreboard:draw()

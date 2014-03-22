@@ -1,8 +1,12 @@
 -- INDEXES START AT 1 FUCK
 
+-- ** GLOBALS **
+tile = { BORDER = "BR"}
+-- ** END GLOBALS **
+
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
-local tile = { BORDER = "BR", CHIP = "CH"}
+local Chip = require("chip")
 local world = {
    scale = 3,
    width = 160,
@@ -11,6 +15,7 @@ local world = {
 }
 local snake = nil
 local sboard = nil
+local chip = nil
 local updateTimer = 0
 
 
@@ -21,7 +26,7 @@ function love.load()
    init_classes()
    init_map()
    place_snake_head()
-   place_starting_chip()
+   chip:place_randomly(world)
 end
 
 function love.draw()
@@ -31,10 +36,16 @@ end
 
 function love.update(dt)
    snake:controls()
+   sboard:update_time_since_last(dt)
 
    updateTimer = updateTimer + dt
    if updateTimer > 0.05 then
-      world.map = snake:update()
+      if snake:touching(chip) then
+         snake:increase_length()
+         sboard:add_score()
+         chip:place_randomly(world)
+      end
+      snake:update(world)
       updateTimer = 0
    end
 end
@@ -61,10 +72,7 @@ function draw_chip_tile(x, y)
 end
 
 function place_starting_chip()
-   local x = math.random(1, #world.map[1])
-   local y = math.random(1, #world.map)
-   print(x, y)
-   world.map[x][y] = tile.CHIP
+
 end
 
 function place_snake_head()
@@ -76,7 +84,7 @@ function draw_map()
       for j = 1, #world.map[1] do
          if world.map[i][j] == tile.BORDER then
             draw_background_tile(i, j)
-         elseif world.map[i][j] == tile.CHIP then
+         elseif type(world.map[i][j]) == "table" then
             draw_chip_tile(i, j)
          elseif world.map[i][j] > 0 then
             draw_snake_tile(i, j)
@@ -107,7 +115,8 @@ end
 
 function init_classes()
    sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
-   snake = Snake:new(world, 6, 6, {0, 0, 0})
+   snake = Snake:new(6, 6, 5 * world.scale, 5 * world.scale, {0, 0, 0})
+   chip = Chip:new()
 end
 
 function init_map()
