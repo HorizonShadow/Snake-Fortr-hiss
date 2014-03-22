@@ -3,6 +3,7 @@ tile = { BORDER = "BR"}
 require("loveframes")
 -- ** END GLOBALS **
 
+-- ** REQUIRES **
 local Item = require("item")
 local ser = require("ser")
 local Mainmenu = require("mainmenu")
@@ -11,11 +12,11 @@ local GameOverScreen = require("gameoverscreen")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
-local sprites = love.graphics.newImage("lib/characters.png")
+-- ** END REQUIRES
+
 local world = {
-   scale = 3,
-   width = 160,
-   height = 144,
+   width = love.window.getWidth(),
+   height = love.window.getHeight(),
    map = {}
 }
 local snake = nil
@@ -24,6 +25,7 @@ local chip = nil
 local mainmenu = nil
 local gameoverscreen = nil
 local store = nil
+
 local itemImages = {
    love.graphics.newImage("lib/bunny-ears.png"),
    love.graphics.newImage("lib/bunny-hat.png"),
@@ -32,8 +34,8 @@ local itemImages = {
    love.graphics.newImage("lib/red-hat.png"),
    love.graphics.newImage("lib/slime-hat.png")
 }
+
 local updateTimer = 0
-local state = "mainmenu"
 local prevStats = 0
 
 function love.load()
@@ -43,16 +45,6 @@ end
 
 function love.quit()
    save_stats()
-end
-
-function init()
-   init_window()
-   init_graphics()
-   init_classes()
-   init_map()
-   init_snake()
-   chip:place_randomly(world)
-   init_loveframes()
 end
 
 function love.mousepressed(x, y, button)
@@ -88,7 +80,6 @@ function love.update(dt)
    if state == "game" then
       snake:controls()
       sboard:update_time_since_last(dt)
-
       updateTimer = updateTimer + dt
       if updateTimer > .04 then
          if snake:touching(chip) then
@@ -97,7 +88,6 @@ function love.update(dt)
             chip:place_randomly(world)
          end
          if snake:is_dead() then
-            -- This enitre fucking conditional is a mess
             loveframes.SetState("gameover")
             save_stats()
             reset()
@@ -110,11 +100,13 @@ function love.update(dt)
    end
 end
 
-function draw_snake_tile(x, y)
-   love.graphics.setColor(166, 166, 166)
-   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 2, 100)
-   love.graphics.setColor(snake.color)
-   love.graphics.circle("fill", (x - 1) * snake.width + snake.width / 2, (y - 1) * snake.height + snake.height / 2, snake.width / 4, 100)
+function init()
+   init_graphics()
+   init_classes()
+   init_map()
+   init_snake()
+   chip:place_randomly(world)
+   init_loveframes()
 end
 
 function draw_snake_hats(x, y)
@@ -134,6 +126,7 @@ function draw_background_tile(x, y)
    love.graphics.setColor(0, 0, 0)
    love.graphics.rectangle("fill", ((x-1) * snake.width) + (snake.width / 4), ((y-1) * snake.height) + (snake.height / 4), snake.width / 2, snake.height / 2)
 end
+
 function init_snake()
    world.map[snake.x][snake.y] = 1
 end
@@ -147,7 +140,7 @@ function draw_map()
          elseif world.map[i][j] == tile.BORDER then
             draw_background_tile(i, j)
          elseif world.map[i][j] > 0 then
-            draw_snake_tile(i, j)
+            snake:draw(i, j)
             draw_snake_hats(i, j)
          end
          if world.map[i][j] ~= 0 then
@@ -171,11 +164,6 @@ function init_loveframes()
    store:init()
 end
 
-function init_window()
-   love.window.setTitle("Team Fortr-hissss")
-   love.window.setMode(world.width * world.scale, world.height * world.scale)
-end
-
 function init_graphics()
    love.graphics.setBackgroundColor(255,255,255)
 end
@@ -184,11 +172,11 @@ function init_classes()
    local file = load_prev_stats()
    local items = {}
 
-   sboard = Scoreboard:new(0, 130 * world.scale, world.width * world.scale, 14 * world.scale)
-   snake = Snake:new(16, 24, 5 * world.scale, 5 * world.scale, {0, 0, 0})
-   chip = Chip:new(0, 0, 5 * world.scale, 5 * world.scale)
-   mainmenu = Mainmenu:new(world.width * world.scale, world.height * world.scale)
-   gameoverscreen = GameOverScreen:new(world.width * world.scale, world.height * world.scale)
+   sboard = Scoreboard:new(0, 390, world.width, 42)
+   snake = Snake:new(16, 24, 15, 15, {0, 0, 0})
+   chip = Chip:new(0, 0, 15, 15)
+   mainmenu = Mainmenu:new(world.width, world.height)
+   gameoverscreen = GameOverScreen:new(world.width, world.height)
 
    if file then
       items = file.items
@@ -205,14 +193,14 @@ function init_classes()
       }
    end
    print(items)
-   store = Store:new(world.width * world.scale, world.height * world.scale, items, prevStats)
+   store = Store:new(world.width, world.height, items, prevStats)
    print(store.items[1].image)
 
 end
 
 function init_map()
-   local mapWidth = (world.width / snake.width) * world.scale
-   local mapHeight = ((world.height * world.scale - sboard.height) / snake.width)
+   local mapWidth = world.width / snake.width
+   local mapHeight = ((world.height - sboard.height) / snake.width)
    for i = 1, mapWidth do
       world.map[i] = {}
       for j = 1, mapHeight do
@@ -246,7 +234,7 @@ function save_stats()
    local file = io.open("snake.sav", "w")
    if file then
       file:write(ser({
-         score = prevStats + sboard.score,
+         score = store.points + sboard.score,
          items = store.items
       }))
    end
