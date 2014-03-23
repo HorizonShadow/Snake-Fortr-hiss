@@ -73,8 +73,14 @@ function love.draw()
    if loveframes:GetState() == "game" then
       sboard:draw()
       draw_map()
+   elseif loveframes:GetState() == "highscores" then
+      if not highscore.visible then
+         highscore:display()
+         highscore.visible = true
+      end
    end
    loveframes.draw()
+
 end
 
 function love.update(dt)
@@ -179,6 +185,7 @@ function init_classes()
    chip = Chip:new(0, 0, 15, 15)
    mainmenu = Mainmenu:new(world.width, world.height)
    gameoverscreen = GameOverScreen:new(world.width, world.height)
+   highscore = Highscore:new(world.width, world.height)
    if file then
       items = file.items
    else
