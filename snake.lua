@@ -30,13 +30,13 @@ function Snake:is_dead()
    return not self.alive
 end
 function Snake:controls()
-   if love.keyboard.isDown("d") and self.direction ~= direction.LEFT then
+   if (love.keyboard.isDown("d") or love.keyboard.isDown("right")) and self.direction ~= direction.LEFT then
       self.nextDirection = direction.RIGHT
-   elseif love.keyboard.isDown("w") and self.direction ~= direction.DOWN then
+   elseif (love.keyboard.isDown("w") or love.keyboard.isDown("up")) and self.direction ~= direction.DOWN then
       self.nextDirection = direction.UP
-   elseif love.keyboard.isDown("a") and self.direction ~= direction.RIGHT then
+   elseif (love.keyboard.isDown("a") or love.keyboard.isDown("left")) and self.direction ~= direction.RIGHT then
       self.nextDirection = direction.LEFT
-   elseif love.keyboard.isDown("s") and self.direction ~= direction.UP then
+   elseif (love.keyboard.isDown("s") or love.keyboard.isDown("down")) and self.direction ~= direction.UP then
       self.nextDirection= direction.DOWN
    end
 end
