@@ -45,6 +45,7 @@ end
 
 
 function on_highscore_button_click(object, x, y)
+
    loveframes.SetState("highscores")
 end
 function on_play_button_click(object, x, y)
