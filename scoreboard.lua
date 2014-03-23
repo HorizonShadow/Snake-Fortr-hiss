@@ -27,7 +27,11 @@ function Scoreboard:update_time_since_last(t)
 end
 
 function Scoreboard:add_score()
-   self.score = self.score + math.floor(500 / self.time_since_last)
+   if self.time_since_last < 1 then
+      self.time_since_last = 1
+   end
+   self.score = self.score + math.floor(250 / self.time_since_last)
+   self.time_since_last = 0
 end
 
 function Scoreboard:draw()
@@ -35,7 +39,6 @@ function Scoreboard:draw()
    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
    love.graphics.setColor(0,0,0)
    love.graphics.print("score: "..self.score, self.x, self.y)
-   love.graphics.print("food: "..self.food, self.x, self.y, 0, 1, 1, 0, -15)
    love.graphics.setColor(love.graphics.getBackgroundColor())
 end
 return Scoreboard

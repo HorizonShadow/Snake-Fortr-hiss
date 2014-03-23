@@ -162,14 +162,6 @@ function draw_map()
    end
 end
 
-function print_map()
-   for j = 1, #world.map[1] do
-      for i = 1, #world.map do
-         io.write(world.map[i][j])
-      end
-      print("")
-   end
-end
 
 function init_loveframes()
    mainmenu:init()
@@ -199,17 +191,15 @@ function init_classes()
       prevStats = 0
       create_save_file()
       items = {
-         Item:new("lib/bunny-ears.png", 2500, "Marvelous bunny ears suitable for any occaision", "Blarget"),
-         Item:new("lib/bunny-hat.png", 3000, "Sometimes you just need a living creature on your head", "Blarget"),
-         Item:new("lib/black-top-hat.png", 4500, "The classiest of snake hats", "Blarget"),
-         Item:new("lib/cowbow-hat.png", 7000, "Yee-haw!", "Blarget"),
-         Item:new("lib/red-hat.png", 10000, "I don't even know what this is", "Blarget"),
-         Item:new("lib/slime-hat.png", 15000, "Prepared to be slimed!", "Blarget")
+         Item:new("lib/bunny-ears.png", 1000, "Marvelous bunny ears suitable for any occaision", "Blarget"),
+         Item:new("lib/cowbow-hat.png", 5000, "Yee-haw!", "Blarget"),
+         Item:new("lib/red-hat.png", 7500, "I don't even know what this is", "Blarget"),
+         Item:new("lib/slime-hat.png", 10000, "Prepared to be slimed!", "Blarget"),
+         Item:new("lib/black-top-hat.png", 15000, "The classiest of snake hats", "Blarget"),
+         Item:new("lib/bunny-hat.png", 20000, "Sometimes you just need a living creature on your head", "Blarget")
       }
    end
-   print(items)
    store = Store:new(world.width, world.height, items, prevStats)
-   print(store.items[1].image)
 
 end
 

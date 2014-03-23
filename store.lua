@@ -8,7 +8,6 @@ function Store:new(w, h, items, points)
       points = points or 0,
       pointsText = nil
    }
-   print("updaed store points: ".. s.points)
    setmetatable(s, {__index = Store})
    return s
 end
@@ -68,7 +67,6 @@ function Store:init()
          :SetState("store")
       toolTip.Update =
          function(object, x, y)
-            print(object:GetWidth())
             if object:GetObject():GetProperty("item").bought then
                object:SetText("You can sell this for half of it's value!")
                object:SetOffsetX(-object:GetWidth())

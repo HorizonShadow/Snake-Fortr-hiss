@@ -67,14 +67,11 @@ function GameOverScreen:init()
 end
 
 function GameOverScreen:SetScore(s)
-   print("SET SCORE")
    self.score = s
 end
 function submit_highscore(score, name)
-   print("working")
    local http = require("socket.http")
    local ltn12 = require("ltn12")
-   print(http)
    local reqbody = "name="..name.."&score="..score
    local respbody = {} -- for the response body
 
@@ -90,7 +87,6 @@ function submit_highscore(score, name)
    }
    -- get body as string by concatenating table filled by sink
    respbody = table.concat(respbody)
-   print("respbody", respcode)
 end
 
 function on_play_button_click()
