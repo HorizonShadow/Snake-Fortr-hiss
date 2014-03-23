@@ -19,6 +19,7 @@ function Store:add_points(p)
 end
 
 function Store:init()
+   local buttons = {}
    local frame = loveframes.Create("frame")
       :SetName("Store")
       :Center()
@@ -58,7 +59,7 @@ function Store:init()
          :SetPos(345, 20)
       if self.points < self.items[i].price then
          buyButton:SetEnabled(false)
-                  :SetText("Not enough points")
+                  :SetText("Not enough points!")
       end
       if self.items[i].bought then
          buyButton:SetEnabled(false)
@@ -72,9 +73,15 @@ function Store:init()
                self.items[i].bought = true
                self.points = self.points - self.items[i].price
                self.pointsText:SetText(self.points)
+               for j = 1, #self.items do
+                  if self.points < self.items[i] then
+                     buttons[i]:SetText("Not enough points!")]
+                  end
+               end
                save_stats()
             end
          end
+      buttons[#buttons+1] = buyButton
       itemGrid:AddItem(panel, i, 1)
    end
    local backButton = loveframes.Create("button", frame)
