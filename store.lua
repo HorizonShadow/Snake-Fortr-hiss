@@ -61,6 +61,22 @@ function Store:init()
       if self.items[i].bought then
          buyButton:SetProperty("bought", true)
       end
+
+      local toolTip = loveframes.Create("tooltip")
+         :SetPadding(10)
+         :SetObject(buyButton)
+         :SetState("store")
+      toolTip.Update =
+         function(object, x, y)
+            print(object:GetWidth())
+            if object:GetObject():GetProperty("item").bought then
+               object:SetText("You can sell this for half of it's value!")
+               object:SetOffsetX(-object:GetWidth())
+            else
+               object:SetText("Hats are worn in the order displayed here!!")
+               object:SetOffsetX(-object:GetWidth())
+            end
+         end
       buyButton.Update =
          function(object, dt)
             if object:GetProperty("item").bought then
