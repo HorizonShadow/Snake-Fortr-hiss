@@ -27,7 +27,7 @@ function Scoreboard:update_time_since_last(t)
 end
 
 function Scoreboard:add_score()
-   self.score = self.score + (500 / self.time_since_last)
+   self.score = self.score + math.floor(500 / self.time_since_last)
 end
 
 function Scoreboard:draw()
