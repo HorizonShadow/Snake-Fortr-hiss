@@ -37,7 +37,6 @@ function Store:init()
       :SetCellHeight(50)
       :SetCellPadding(5)
       :SetItemAutoSize(true)
-   print(#self.items)
    for i = 1, #self.items do
       local panel = loveframes.Create("panel")
          :SetState("store")
