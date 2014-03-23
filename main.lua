@@ -2,6 +2,15 @@
 tile = { BORDER = "BR"}
 require("loveframes")
 boop = love.audio.newSource("lib/boop.wav")
+buysomething = love.audio.newSource("lib/buysomething.wav")
+entergame = love.audio.newSource("lib/openstore.wav")
+enterstore = love.audio.newSource("lib/enterstore.wav")
+exitstore = love.audio.newSource("lib/exitstore.wav")
+losegame = love.audio.newSource("lib/losegame.wav")
+openstore = love.audio.newSource("lib/openstore.wav", "static")
+sellsomething = love.audio.newSource("lib/sellsomething.wav")
+
+
 musics = {
    love.audio.newSource("lib/mus1.mp3"),
    love.audio.newSource("lib/mus2.mp3"),
@@ -52,10 +61,11 @@ local updateTimer = 0
 local prevStats = 0
 
 function love.load()
-   math.randomseed(os.time())
-   backgroundMusic = musics[math.random(1,5)]
-   backgroundMusic:play()
-   boop:setRolloff(2)
+   entergame:setVolume(.5)
+   losegame:setVolume(.5)
+   boop:setVolume(.5)
+   play_random_background_music()
+   entergame:setPitch(2)
    boop:setPitch(2)
    loveframes.SetState("mainmenu")
    init()
@@ -86,11 +96,7 @@ function love.textinput(text)
 end
 
 function love.draw()
-   if not backgroundMusic:isPlaying() then
-      math.randomseed(os.time())
-      backgroundMusic = musics[math.random(1,5)]
-      backgroundMusic:play()
-   end
+
    if loveframes:GetState() == "game" then
       sboard:draw()
       draw_map()
@@ -105,8 +111,13 @@ function love.draw()
 end
 
 function love.update(dt)
+   if not backgroundMusic:isPlaying() then
+      play_random_background_music()
+   end
    local state = loveframes:GetState()
    if state == "reset" then
+      entergame:rewind()
+      entergame:play()
       save_stats()
       reset()
    end
@@ -117,13 +128,14 @@ function love.update(dt)
       if updateTimer > .04 then
          if snake:touching(chip) then
             boop:rewind()
-            boop:seek(20, "samples")
             boop:play()
             snake:increase_length()
             sboard:add_score()
             chip:place_randomly(world)
          end
          if snake:is_dead() then
+            losegame:rewind()
+            losegame:play()
             gameoverscreen:SetScore(sboard.score)
             loveframes.SetState("gameover")
          end
@@ -250,6 +262,11 @@ function reset()
    loveframes.SetState("game")
 end
 
+function play_random_background_music()
+   math.randomseed(os.time())
+   backgroundMusic = musics[math.random(1,5)]
+   backgroundMusic:play()
+end
 function create_save_file()
    local save = io.open("snake.sav", "w")
    save:write(ser({
