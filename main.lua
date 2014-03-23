@@ -13,6 +13,7 @@ local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
 local Highscore = require('highscore')
+local About = require('about')
 -- ** END REQUIRES
 
 local world = {
@@ -27,6 +28,7 @@ local mainmenu = nil
 local gameoverscreen = nil
 local store = nil
 local highscore = nil
+local about = nil
 
 local itemImages = {
    love.graphics.newImage("lib/bunny-ears.png"),
@@ -173,6 +175,7 @@ function init_loveframes()
    mainmenu:init()
    store:init()
    gameoverscreen:init()
+   about:init()
 end
 
 function init_graphics()
@@ -189,6 +192,7 @@ function init_classes()
    mainmenu = Mainmenu:new(world.width, world.height)
    gameoverscreen = GameOverScreen:new(world.width, world.height)
    highscore = Highscore:new(world.width, world.height)
+   about = About:new(world.width, world.height)
    if file then
       items = file.items
    else
