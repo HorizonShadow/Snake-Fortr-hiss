@@ -38,6 +38,7 @@ function Scoreboard:draw()
    love.graphics.setColor(166, 166, 166)
    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
    love.graphics.setColor(0,0,0)
+   love.graphics.setFont(love.graphics.newFont(24))
    love.graphics.print("score: "..self.score, self.x, self.y)
    love.graphics.setColor(love.graphics.getBackgroundColor())
 end
