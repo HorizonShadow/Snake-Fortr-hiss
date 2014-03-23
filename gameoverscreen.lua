@@ -4,14 +4,13 @@ function GameOverScreen:new(w, h)
    local g = {
       width = w,
       height = h,
-      score = 0,
-      scoreText = nil
+      score = 0
    }
    setmetatable(g, {__index = GameOverScreen})
    return g
 end
 
-function GameOverScreen:make(s)
+function GameOverScreen:init()
    local frame = loveframes.Create("frame")
       :SetName("Game Over")
       :Center()
@@ -43,9 +42,14 @@ function GameOverScreen:make(s)
       :SetLimit(20)
    local scoreText = loveframes.Create("text", frame)
       :CenterX()
-      :SetPos(160, 50)
+      :SetPos(175, 50)
       :SetFont(love.graphics.newFont(24))
-      :SetText("Your score: "..s)
+      :SetText(0)
+   scoreText.Draw =
+      function(object, dt)
+         print("UPDATING", self.score, object:GetText())
+         object:SetText("Score: "..self.score)
+      end
    local submitHighscore = loveframes.Create("button", frame)
       :CenterX()
       :SetPos(140, 150)
@@ -53,7 +57,7 @@ function GameOverScreen:make(s)
       :SetText("Submit Score!")
    submitHighscore.OnClick =
       function(object, x, y)
-         submit_highscore(s, nameInput:GetText())
+         submit_highscore(self.score, nameInput:GetText())
          object:SetEnabled(false)
          object:SetText("Score Submitted!")
          nameInput:SetEditable(false)
@@ -63,6 +67,10 @@ function GameOverScreen:make(s)
    mainMenuButton.OnClick = on_main_menu_button_click
 end
 
+function GameOverScreen:SetScore(s)
+   print("SET SCORE")
+   self.score = s
+end
 function submit_highscore(score, name)
    print("working")
    local http = require("socket.http")
@@ -87,7 +95,7 @@ function submit_highscore(score, name)
 end
 
 function on_play_button_click()
-   loveframes.SetState("game")
+   loveframes.SetState("reset")
 end
 
 function on_store_button_click()

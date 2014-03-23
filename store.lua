@@ -19,7 +19,6 @@ function Store:add_points(p)
 end
 
 function Store:init()
-   local buttons = {}
    local frame = loveframes.Create("frame")
       :SetName("Store")
       :Center()
@@ -57,31 +56,33 @@ function Store:init()
          :SetText("Buy now!")
          :SetWidth(100)
          :SetPos(345, 20)
-      if self.points < self.items[i].price then
-         buyButton:SetEnabled(false)
-                  :SetText("Not enough points!")
-      end
+         :SetAlwaysUpdate(true)
+         :SetProperty("price", self.items[i].price)
       if self.items[i].bought then
-         buyButton:SetEnabled(false)
-                  :SetText("Bought!")
+         buyButton:SetProperty("bought", true)
       end
+      buyButton.Update =
+         function(object, dt)
+            if object:GetProperty("bought") then
+               object:SetText("Bought!")
+               object:SetEnabled(false)
+            elseif self.points < object:GetProperty("price") then
+               object:SetText("Not enough points!")
+               object:SetEnabled(false)
+            else
+               object:SetText("Buy now!")
+               object:SetEnabled(true)
+            end
+         end
       buyButton.OnClick =
          function(object, x, y)
             if self.points >= self.items[i].price then
-               object:SetText("Bought!")
-               object:SetEnabled(false)
+               object:SetProperty("bought", true)
                self.items[i].bought = true
                self.points = self.points - self.items[i].price
-               self.pointsText:SetText(self.points)
-               for j = 1, #self.items do
-                  if self.points < self.items[i] then
-                     buttons[i]:SetText("Not enough points!")]
-                  end
-               end
                save_stats()
             end
          end
-      buttons[#buttons+1] = buyButton
       itemGrid:AddItem(panel, i, 1)
    end
    local backButton = loveframes.Create("button", frame)
@@ -91,7 +92,10 @@ function Store:init()
    local points = loveframes.Create("text", frame)
       :SetPos(backButton:GetWidth() + 10, self.height - 30)
       :SetText("Your points: "..self.points)
-   self.pointsText = points
+   points.Update =
+      function(object, dt)
+         object:SetText("Your points: "..self.points)
+      end
 end
 
 function on_back_button_click(object, x, y)

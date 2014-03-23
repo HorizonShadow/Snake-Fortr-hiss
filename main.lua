@@ -85,6 +85,10 @@ end
 
 function love.update(dt)
    local state = loveframes:GetState()
+   if state == "reset" then
+      save_stats()
+      reset()
+   end
    if state == "game" then
       snake:controls()
       sboard:update_time_since_last(dt)
@@ -96,10 +100,8 @@ function love.update(dt)
             chip:place_randomly(world)
          end
          if snake:is_dead() then
-            gameoverscreen:make(sboard.score)
+            gameoverscreen:SetScore(sboard.score)
             loveframes.SetState("gameover")
-            save_stats()
-            reset()
          end
          snake:update(world)
          updateTimer = 0
@@ -170,6 +172,7 @@ end
 function init_loveframes()
    mainmenu:init()
    store:init()
+   gameoverscreen:init()
 end
 
 function init_graphics()
@@ -226,6 +229,7 @@ end
 
 function reset()
    init()
+   loveframes.SetState("game")
 end
 
 function create_save_file()
