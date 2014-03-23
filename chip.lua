@@ -15,6 +15,10 @@ function Chip:place_randomly(world)
    math.randomseed(os.time())
    self.x = math.random(2, #world.map-1)
    self.y = math.random(2, #world.map[1]-1)
+   while (world.map[self.x][self.y] > 0) do
+      self.x = math.random(2, #world.map-1)
+      self.y = math.random(2, #world.map[1]-1)
+   end
    world.map[self.x][self.y] = self
 end
 
