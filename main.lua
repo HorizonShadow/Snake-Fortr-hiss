@@ -1,6 +1,15 @@
 -- ** GLOBALS **
 tile = { BORDER = "BR"}
 require("loveframes")
+boop = love.audio.newSource("lib/boop.wav")
+musics = {
+   love.audio.newSource("lib/mus1.mp3"),
+   love.audio.newSource("lib/mus2.mp3"),
+   love.audio.newSource("lib/mus3.mp3"),
+   love.audio.newSource("lib/mus4.mp3"),
+   love.audio.newSource("lib/mus5.mp3")
+}
+backgroundMusic = nil
 -- ** END GLOBALS **
 
 -- ** REQUIRES **
@@ -32,17 +41,22 @@ local about = nil
 
 local itemImages = {
    love.graphics.newImage("lib/bunny-ears.png"),
-   love.graphics.newImage("lib/bunny-hat.png"),
-   love.graphics.newImage("lib/black-top-hat.png"),
    love.graphics.newImage("lib/cowbow-hat.png"),
    love.graphics.newImage("lib/red-hat.png"),
-   love.graphics.newImage("lib/slime-hat.png")
+   love.graphics.newImage("lib/slime-hat.png"),
+   love.graphics.newImage("lib/black-top-hat.png"),
+   love.graphics.newImage("lib/bunny-hat.png")
 }
 
 local updateTimer = 0
 local prevStats = 0
 
 function love.load()
+   math.randomseed(os.time())
+   backgroundMusic = musics[math.random(1,5)]
+   backgroundMusic:play()
+   boop:setRolloff(2)
+   boop:setPitch(2)
    loveframes.SetState("mainmenu")
    init()
 end
@@ -72,6 +86,11 @@ function love.textinput(text)
 end
 
 function love.draw()
+   if not backgroundMusic:isPlaying() then
+      math.randomseed(os.time())
+      backgroundMusic = musics[math.random(1,5)]
+      backgroundMusic:play()
+   end
    if loveframes:GetState() == "game" then
       sboard:draw()
       draw_map()
@@ -97,6 +116,9 @@ function love.update(dt)
       updateTimer = updateTimer + dt
       if updateTimer > .04 then
          if snake:touching(chip) then
+            boop:rewind()
+            boop:seek(20, "samples")
+            boop:play()
             snake:increase_length()
             sboard:add_score()
             chip:place_randomly(world)
@@ -154,7 +176,9 @@ function draw_map()
             draw_background_tile(i, j)
          elseif world.map[i][j] > 0 then
             snake:draw(i, j)
-            draw_snake_hats(i, j)
+            if world.map[i][j] == 1 then
+               draw_snake_hats(i, j)
+            end
          end
          if world.map[i][j] ~= 0 then
          end
