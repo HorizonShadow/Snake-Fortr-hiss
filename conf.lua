@@ -3,7 +3,7 @@ function love.conf(t)
     t.version = "0.9.0"                -- The LÖVE version this game was made for (string)
     t.console = false                  -- Attach a console (boolean, Windows only)
 
-    t.window.title = "Team Fortr-hisss"-- The window title (string)
+    t.window.title = "Snake Fortr-hisss"-- The window title (string)
     t.window.icon = nil                -- Filepath to an image to use as the window's icon (string)
     t.window.width = 480               -- The window width (number)
     t.window.height = 432              -- The window height (number)
