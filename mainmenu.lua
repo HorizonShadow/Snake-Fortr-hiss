@@ -24,17 +24,29 @@ function Mainmenu:init()
    local playButton = loveframes.Create("button", frame)
       :SetText("Play")
       :SetPos(200, 200)
+      :CenterX()
    local storeButton = loveframes.Create("button", frame)
       :SetText("Store")
       :SetPos(200, 250)
+      :CenterX()
+   local highscoreButton = loveframes.Create("button", frame)
+      :SetText("Leaderboards")
+      :SetPos(200, 300)
+      :CenterX()
    local aboutButton = loveframes.Create("button", frame)
       :SetText("About")
-      :SetPos(200, 300)
+      :SetPos(200, 350)
+      :CenterX()
    playButton.OnClick = on_play_button_click
    storeButton.OnClick = on_store_button_click
    aboutButton.OnClick = on_about_button_click
+   highscoreButton.OnClick = on_highscore_button_click
 end
 
+
+function on_highscore_button_click(object, x, y)
+   loveframes.SetState("highscores")
+end
 function on_play_button_click(object, x, y)
    loveframes.SetState("game")
 end
