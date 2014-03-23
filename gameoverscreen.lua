@@ -47,7 +47,6 @@ function GameOverScreen:init()
       :SetText(0)
    scoreText.Draw =
       function(object, dt)
-         print("UPDATING", self.score, object:GetText())
          object:SetText("Score: "..self.score)
       end
    local submitHighscore = loveframes.Create("button", frame)
