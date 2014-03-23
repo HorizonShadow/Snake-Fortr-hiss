@@ -12,6 +12,7 @@ local GameOverScreen = require("gameoverscreen")
 local Snake = require("snake")
 local Scoreboard = require("scoreboard")
 local Chip = require("chip")
+local Highscore = require('highscore')
 -- ** END REQUIRES
 
 local world = {
@@ -25,6 +26,7 @@ local chip = nil
 local mainmenu = nil
 local gameoverscreen = nil
 local store = nil
+local highscore = nil
 
 local itemImages = {
    love.graphics.newImage("lib/bunny-ears.png"),
@@ -88,6 +90,7 @@ function love.update(dt)
             chip:place_randomly(world)
          end
          if snake:is_dead() then
+            gameoverscreen:make(sboard.score)
             loveframes.SetState("gameover")
             save_stats()
             reset()
@@ -160,7 +163,6 @@ end
 
 function init_loveframes()
    mainmenu:init()
-   gameoverscreen:init()
    store:init()
 end
 
@@ -177,7 +179,6 @@ function init_classes()
    chip = Chip:new(0, 0, 15, 15)
    mainmenu = Mainmenu:new(world.width, world.height)
    gameoverscreen = GameOverScreen:new(world.width, world.height)
-
    if file then
       items = file.items
    else
