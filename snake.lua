@@ -10,7 +10,8 @@ function Snake:new(x, y, w, h, color)
       color = color,
       width = w,
       height = h,
-      direction = direction.UP,
+      direction = nil,
+      nextDirection = direction.UP,
       length = 1,
       alive = true,
       x = x,
@@ -30,13 +31,13 @@ function Snake:is_dead()
 end
 function Snake:controls()
    if love.keyboard.isDown("d") and self.direction ~= direction.LEFT then
-      self.direction = direction.RIGHT
+      self.nextDirection = direction.RIGHT
    elseif love.keyboard.isDown("w") and self.direction ~= direction.DOWN then
-      self.direction = direction.UP
+      self.nextDirection = direction.UP
    elseif love.keyboard.isDown("a") and self.direction ~= direction.RIGHT then
-      self.direction = direction.LEFT
+      self.nextDirection = direction.LEFT
    elseif love.keyboard.isDown("s") and self.direction ~= direction.UP then
-      self.direction= direction.DOWN
+      self.nextDirection= direction.DOWN
    end
 end
 function Snake:increment(world)
@@ -68,7 +69,12 @@ function Snake:increase_length()
    self.length = self.length + 4
 end
 
-function Snake:move(world) --can move over anything but
+function Snake:move(world)
+   if self.nextDirection == direction.UP and self.direction == direction.DOWN then return end      -- Prevents the player from running over itself.
+   if self.nextDirection == direction.DOWN and self.direction == direction.UP then return end      -- Example: Player hits "UP" while going RIGHT
+   if self.nextDirection == direction.LEFT and self.direction == direction.RIGHT then return end   -- move() checks if it's valid. Player hits LEFT
+   if self.nextDirection == direction.RIGHT and self.direction == direction.LEFT then return end   -- before view updates. Player is now moving through himself
+   self.direction = self.nextDirection
    local nextPos = world.map[self.x + self.direction.x][self.y + self.direction.y]
    if nextPos == 0 or type(nextPos) == "table" then
       self.x = self.x + self.direction.x
