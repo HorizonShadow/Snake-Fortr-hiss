@@ -1,3 +1,6 @@
+What is it?
+===========
+
 This is my submission to the 7th bacongamejam.
 
 The bacongamejam is a 48 hour competition where teams of 1 or more create a game
@@ -8,7 +11,8 @@ I like to make something with simple mechanics, then give it some cute flair to 
 
 This version of snake has an online top 10 list, and a hat store for you to deck out your snake.
 
-<h1> Controls </h1>
+Controls
+========
 
 Arrow keys to move.
 WASD to move.
