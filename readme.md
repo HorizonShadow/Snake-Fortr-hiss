@@ -15,4 +15,5 @@ Controls
 ========
 
 Arrow keys to move.
+
 WASD to move.
